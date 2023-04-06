@@ -1,6 +1,7 @@
 import Post from '../components/Post';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Navigate } from 'react-router-dom';
+import { UserContext } from '../UserContext';
 
 
 
@@ -9,6 +10,7 @@ export default function LoginPage(){
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
+    const {setUserInfo} = useContext(UserContext);
 
     async function login(ev) {
         ev.preventDefault();
@@ -21,7 +23,15 @@ export default function LoginPage(){
         })
         if (response.ok) 
         {
-            setRedirect(true);
+            response.json().then(userInfo => {
+                setUserInfo(userInfo);
+                setRedirect(true);
+            })
+          
+        }
+        else
+        {
+            alert("Wrong credentials");
         }
       
     }
@@ -42,7 +52,7 @@ export default function LoginPage(){
             <input type="password" placeholder="Password" 
             value={password}
             onChange={ev => setPassword(ev.target.value) }/>
-            <button type="submit">Login</button>
+            <button >Login</button>
         </form>
     )
 }
